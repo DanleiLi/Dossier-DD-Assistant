@@ -1,29 +1,16 @@
 # Frontend setup
 
-This project uses a Vite + React SPA because the frontend is an internal tool that mainly needs fast iteration, authenticated app flows, and a clean connection to the FastAPI backend. We do not need the extra server-rendering, SEO, or full-stack routing features that Next.js is optimized for.
+The frontend is a React and Vite app. You need Node.js and pnpm.
 
-## Init (from empty `frontend/`)
+## Configure and run
 
-```bash
-cd frontend
-pnpm create vite . --template react-ts  #set up scafolding
-pnpm install
-pnpm add react-router-dom @supabase/supabase-js
-pnpm add -D tailwindcss @tailwindcss/vite #styling
-pnpm dlx shadcn@latest init #ready to use components
-```
+Copy `frontend/.env.example` to `frontend/.env` and set the API URL, Supabase project URL, and publishable key. These values are used by the browser app; do not put server secrets in this file.
 
-## Run
+From `frontend/`:
 
-```bash
-cd frontend
+```powershell
 pnpm install
 pnpm dev
 ```
 
-## Check
-
-```bash
-pnpm tsc --noEmit
-pnpm lint
-```
+Vite prints the local development URL after startup. The frontend expects the FastAPI service to be running at the URL configured by `VITE_API_BASE_URL`.

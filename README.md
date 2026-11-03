@@ -66,10 +66,33 @@ React + Vite frontend · FastAPI backend · project-scoped document retrieval ·
 
 ## Run locally
 
-Configure database and model credentials using the [backend setup guide](specs/guides/backend-setup.md) and [frontend setup guide](specs/guides/frontend-setup.md). Start the API with `python run.py` from `backend/`; start the UI with `pnpm install` and `pnpm dev` from `frontend/`.
+### Prerequisites
+
+Python 3.12+, [`uv`](https://docs.astral.sh/uv/), Node.js, pnpm, a Supabase project, and OpenAI and Anthropic API keys. Copy `backend/.env.example` to `backend/.env` and `frontend/.env.example` to `frontend/.env`, then fill in the values. Never put the Supabase service key in the frontend env file.
+
+### Start the app
+
+In one terminal:
+
+```powershell
+cd backend
+uv sync
+uv run alembic upgrade head
+uv run python run.py
+```
+
+In another terminal:
+
+```powershell
+cd frontend
+pnpm install
+pnpm dev
+```
+
+For Supabase credential and migration details, see the [Supabase setup](specs/guides/supabase-setup.md), [backend guide](specs/guides/backend-setup.md), and [frontend guide](specs/guides/frontend-setup.md).
 
 | Code and product | Evaluation and data |
 | --- | --- |
-| [`backend/`](backend/) API and agent · [`frontend/`](frontend/) web app · [`specs/`](specs/) product and setup notes | [`eval/`](eval/) evaluation prototype · [`data/`](data/) local application data |
+| [`backend/`](backend/) API and agent · [`frontend/`](frontend/) web app · [`specs/`](specs/) product and setup notes | [`eval/`](eval/) evaluation prototype · [`data/`](data/) sample and local application data |
 
 Dossier is a working prototype, not a production due diligence service. Its outputs support analyst work and require qualified human review.

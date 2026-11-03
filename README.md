@@ -1,111 +1,75 @@
 # Dossier
 
-**An AI agent system for investment due diligence.**
+<p align="center">
+  <strong>Turn a document pile into a reviewable investment brief.</strong><br />
+  An evidence-first due diligence workspace with an AI agent that shows its work.
+</p>
 
-Dossier turns weeks of manual due diligence (DD) work into a guided, auditable workflow, built on Claude Code with specialised sub-agents and skills.
+<p align="center">
+  <img alt="Python FastAPI" src="https://img.shields.io/badge/Python-FastAPI-17324D?style=flat-square" />
+  <img alt="React Vite" src="https://img.shields.io/badge/React-Vite-19A7A0?style=flat-square" />
+  <img alt="Evidence-grounded AI" src="https://img.shields.io/badge/AI-evidence--grounded-8B6CF6?style=flat-square" />
+  <img alt="Evaluation prototype" src="https://img.shields.io/badge/Evaluation-prototype-F2B84B?style=flat-square" />
+</p>
 
-> Demo project. Built to show how I'd frame and structure an agentic solution to a real, high-stakes client problem.
+Dossier helps investment analysts review product documents, find evidence and gaps, run supported checks, and draft reports for human review. It is a personal job-hunting project demonstrating product thinking, workflow design, and agent evaluation.
 
----
+## The workflow
 
-## The Problem 
+Due diligence information is scattered across disclosures, questionnaires, fee schedules, portfolio materials, and meeting notes. Dossier brings the review into one project workspace and makes unknowns visible instead of guessing through them.
 
-Before a managed portfolio is approved on a wealth platform, an investment team has to read through hundreds of pages of source material - Investment Manager Questionnaires, PDSs, fact sheets, fee schedules, meeting recap and other relevant information.
+```mermaid
+flowchart LR
+    A[Documents] --> B[Ingest and index]
+    B --> C[Project evidence]
+    Q[Analyst question] --> D[Agent]
+    C --> D
+    D --> E[Retrieve evidence]
+    D --> F[Check gaps]
+    D --> G[Supported analysis]
+    E --> R[Draft report]
+    F --> R
+    G --> R
+    R --> H[Human review]
+    H -. follow up .-> Q
+    classDef input fill:#E9F5F4,stroke:#19A7A0,color:#17324D
+    classDef agent fill:#EEE9FF,stroke:#8B6CF6,color:#241C42
+    classDef review fill:#FFF4D8,stroke:#F2B84B,color:#3D3218
+    class A,B,C,Q input
+    class D,E,F,G,R agent
+    class H review
+```
 
-In practice this means:
+**Design principles:** Ground claims in project evidence; distinguish facts, conflicts, and unknowns; keep agent tools bounded; leave interpretation and approval with the analyst. The orchestrator handles persistence, while retrieval stays scoped to the active project.
 
-- **Delayed revenue:** New products are a strong contribution to business cash flow. During peak season, the business has to delay product launch by at least a month to accomodate researchers' workload.
-- **Inconsistent depth:** Different analysts surface different signals; coverage of fees, liquidity, and ESG varies.
-- **Hard to audit:** When a finding is challenged, tracing it back to the exact source page or cell is painful.
-- **Document chaos:** The same fact lives across an Excel questionnaire, a PDF disclosure, and a marketing deck that are often disagreeing.
+## Evaluation: measure the failure modes
 
-Generic chatbots don't solve this. They hallucinate, they lose context across long documents, and they can't be governed for a regulated, client-facing process.
+A useful answer must be accurate against the supplied evidence, cite it correctly, cover the task, identify gaps, and handle uncertainty. The evaluation prototype proposes paired runs on the same closed evidence bundle, with anonymized outputs, atomic rubric scoring, and human review of failures, disputes, and a sample of passes.
 
----
+![Illustrative all-pass task rate: Dossier 55.2%, GPT-Luna 34.3%, Claude Sonnet 29.8%. Values are user-supplied examples, not measured results.](image/evaluation-all-pass.svg)
 
-## The Approach
+*Illustrative values only. No benchmark has been run; these are not measured results.*
 
-Rather than one large prompt, the work is split across **specialised agents and skills**, each with a narrow job and a clear boundary. This mirrors how a real DD team actually operates. Junior analysts ingest and clean, specialists drill into fees or ESG, a senior writer compiles, and a human reviews before anything goes out.
-
-Three design choices drive the framework:
-
-1. **Ground every output in a cleaned knowledge base.** Raw documents are parsed once into a structured `wiki/` and never read directly again. This stops the model from hallucinating and gives every claim a traceable source.
-2. **Separate "extract" from "analyse" from "write."** Different agents, different models, different cost profiles. Cheap models do parsing; stronger models do reasoning and drafting.
-3. **Keep humans in the loop where it matters.** The analyst sets scope at the start and reviews the draft at the end. The agents do the legwork in between.
-
----
-
-## Agent Workflow
-
-![Agent workflow](image/agentworflow.png)
-
-**How a run flows:**
-
-1. **Human sets scope.** Which portfolio, which areas to focus on (e.g. fees, liquidity, ESG).
-2. **`doc-ingestion`** parses raw PDFs, Excel questionnaires, and decks into clean, structured artifacts in `wiki/`.
-3. **Specialist skills and sub-agents** analyse the wiki for their slice of the problem: `portfolio-profile`, `fee-analysis`, liquidity & stress, ESG & team, ABN verification.
-4. **`doc-writer`** compiles findings into a draft DD paper.
-5. **Human reviews.** Approve, or send back with revision notes that re-trigger the relevant agents.
-
----
-
-## Real-World Challenges It Addresses
-
-| Challenge in DD work | How the framework handles it |
+| Evaluation area | Signals |
 | --- | --- |
-| Hallucinated facts in regulated outputs | Agents read only from cleaned `wiki/` files; the IM Questionnaire is the authoritative source when present |
-| Same fact, different documents, different numbers | Ingestion normalises and labels each source; conflicts are surfaced rather than silently picked |
-| "Where did this number come from?" audits | Every wiki file keeps source metadata; logs in `log.md` track every ingest, query, and edit |
-| Long, mixed-format documents | Heterogeneous parsers per format (xlsx, pdf, docx, pptx) feed a uniform JSON layer |
-| Cost and latency on large docs | Cheap models for parsing/cleaning, stronger models reserved for analysis and drafting |
-| Quality drift across analysts | Skills encode a fixed methodology, so every portfolio gets the same depth of review |
+| **Answer quality** | Relevance, factual correctness, completeness, evidence and citation support |
+| **Risk handling** | Gap detection, uncertainty, material hallucinations, human judge corrections |
+| **Practicality** | Cost and latency per task |
 
----
+Compare results case by case, report denominators and category breakdowns, and keep material hallucinations visible. The protocol evaluates decision support, not investment outcomes or regulatory compliance.
 
-## What It Produces
+> **Status:** Evaluation design prototype. Cases, rubric examples, and chart values are illustrative; no benchmark has been run and no performance claim is being made. Read the [evaluation protocol](eval/README.md) for methods and limitations.
 
-- A **Highly Customisable Due Diligence Paper** (Word) covering portfolio profile, fees, liquidity, stress testing, ESG, team, and verification checks. 
-- A **structured knowledge base** (`wiki/`) that future runs and analysts can re-use.
-- An **audit trail** of what was ingested, when, and which agent touched it.
+## Implementation
 
----
+React + Vite frontend · FastAPI backend · project-scoped document retrieval · coverage checks · supported analyses · report drafting. The tools return findings; the orchestrator records application state. See [`backend/AGENT.md`](backend/AGENT.md) and [`specs/`](specs/).
 
-## Project Structure
+## Run locally
 
-```
-.
-├── .claude/
-│   ├── agents/                  # Specialised sub-agents
-│   │   ├── doc-ingestion/       # Parse & clean raw documents into wiki/
-│   │   ├── doc-writer/          # Compile DD paper sections
-│   │   ├── fee-search/          # Pull fees from public sources (e.g. PDS)
-│   │   └── cleaner/             # Maintain wiki/ hygiene
-│   └── skills/                  # Targeted analysis modules
-│       ├── portfolio-profile/   # Strategy, allocation, risk, rebalancing
-│       ├── fee-analysis/        # Fee calc & benchmarking
-│       ├── paper-writing/       # DD paper structure & methodology
-│       ├── verify-abn/          # ABN compliance check
-│       ├── pdf/ docx/ xlsx/     # Format-specific extraction helpers
-│       └── portfolio-profile/
-├── wiki/                        # Cleaned, structured knowledge base
-├── raw_document/                # Untouched source files (gitignored)
-├── output/                      # Generated DD papers (gitignored)
-├── image/                       # Diagrams
-├── CLAUDE.md                    # Working principles & knowledge index
-├── log.md                       # Append-only activity log
-└── README.md
-```
+Configure database and model credentials using the [backend setup guide](specs/guides/backend-setup.md) and [frontend setup guide](specs/guides/frontend-setup.md). Start the API with `python run.py` from `backend/`; start the UI with `pnpm install` and `pnpm dev` from `frontend/`.
 
----
+| Code and product | Evaluation and data |
+| --- | --- |
+| [`backend/`](backend/) API and agent · [`frontend/`](frontend/) web app · [`specs/`](specs/) product and setup notes | [`eval/`](eval/) evaluation prototype · [`data/`](data/) local application data |
 
-## Why This Matters for the Client
-
-For a wealth platform or asset consultant, this isn't a productivity gimmick. It's about **getting more portfolios reviewed, more consistently, with a defensible paper trail**. The same pattern (ingest, specialise, compile, review) ports cleanly to other regulated workflows: credit memos, vendor risk, fund onboarding, compliance reviews.
-
-The interesting work isn't the model. It's the **framework around it**: how you scope agents, where you place the human, how you keep outputs grounded, and how you make the whole thing auditable.
-
----
-
-## License
-
-Project-specific. See `CLAUDE.md` for working principles.
+Dossier is a working prototype, not a production due diligence service. Its outputs support analyst work and require qualified human review.

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrative all-pass task rate comparison</title>
+  <desc id="desc">Dossier agent: 55.2 percent; GPT-Luna: 34.3 percent; Claude Sonnet: 29.8 percent. These are user-supplied illustrative values, not measured benchmark results.</desc>
+  <rect width="920" height="390" rx="24" fill="#101B2D"/>
+  <circle cx="838" cy="70" r="92" fill="#8B6CF6" opacity=".10"/>
+  <circle cx="874" cy="38" r="45" fill="#19A7A0" opacity=".12"/>
+  <text x="54" y="57" fill="#F7F9FC" font-family="Arial, sans-serif" font-size="23" font-weight="700">ALL-PASS TASK RATE</text>
+  <text x="54" y="84" fill="#AAB7C8" font-family="Arial, sans-serif" font-size="14">Illustrative comparison · percent of tasks passing every applicable criterion</text>
+  <g font-family="Arial, sans-serif" font-size="14" fill="#AAB7C8">
+    <text x="258" y="126" text-anchor="middle">0%</text><text x="358" y="126" text-anchor="middle">20%</text><text x="458" y="126" text-anchor="middle">40%</text><text x="558" y="126" text-anchor="middle">60%</text><text x="658" y="126" text-anchor="middle">80%</text><text x="758" y="126" text-anchor="middle">100%</text>
+  </g>
+  <g stroke="#35445A" stroke-width="1">
+    <path d="M258 140V303M358 140V303M458 140V303M558 140V303M658 140V303M758 140V303"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="16" fill="#E8EDF5">
+    <text x="54" y="173">Dossier agent</text><text x="54" y="233">GPT-Luna</text><text x="54" y="293">Claude Sonnet</text>
+  </g>
+  <rect x="258" y="151" width="276" height="30" rx="8" fill="#19A7A0"/>
+  <rect x="258" y="211" width="171.5" height="30" rx="8" fill="#8B6CF6"/>
+  <rect x="258" y="271" width="149" height="30" rx="8" fill="#F2B84B"/>
+  <g font-family="Arial, sans-serif" font-size="17" font-weight="700">
+    <text x="546" y="172" fill="#7CE0D5">55.2%</text><text x="441" y="232" fill="#C7B8FF">34.3%</text><text x="419" y="292" fill="#FFD780">29.8%</text>
+  </g>
+  <rect x="54" y="329" width="812" height="38" rx="10" fill="#1A2940"/>
+  <text x="72" y="353" fill="#D8E0EC" font-family="Arial, sans-serif" font-size="13">Illustrative values supplied for presentation only · no benchmark has been run · not measured results</text>
+</svg>
